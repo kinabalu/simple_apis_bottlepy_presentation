@@ -65,6 +65,7 @@
 			.reveal td { font-size: 0.5em; font-weight: normal; padding: 1em;}
 			.reveal table { border: 1px solid #777; }
 
+			.reveal .noborder { border: none; }
 		</style>
 
 		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
@@ -87,7 +88,7 @@
 			<div class="slides">
 
 				<section>
-				    <object type="image/svg+xml" width="300" height="300" data="images/HTML5-Logo.svg"></object>
+				<img src="images/bottlepy_logo.png" class="noborder"/>
 
 					<h2>Simple API's with bottle.py</h2>
 					<p>
@@ -101,7 +102,7 @@
 				<section>
 					<section>
 						<h2>About Me</h2>
-						<img src="images/me_and_jd.png" /> <!-- update to a more recent photo -->
+						<img src="images/me_and_j.jpg" />
 					</section>
 					<section>
 						<h2>About Me</h2>
@@ -114,107 +115,29 @@
 						<p class="fragment"><strong>To our success!</strong></p>
 					</section>
 				</section>
-				<section fullscreen-img="images/skydiving.png" />
-				</section>	
 				<section fullscreen-img="images/rakia_63.png" />
+					<aside class="notes">
+						Known side effects: 
+						- You may start to sing. 
+						- You can't find your way home. 
+						- It's possible you may forget your name and/or get lost in your own home. 
+						- If you drink more than 1 liter you may collapse. The bulgarian term for this condition is "Ïèÿí íà ñâèíÿ" (transcription "Pian na svinia", meaning "Drunk like a pig").
+						...oh, rakiq,oh holy martyr... (quote from a bulgarian rakia-dedicated song... actually most of the bulgarian popular music (a.k.a. chalga) is dedicated and/or result of this powerfull brew...)
+					</aside>
 				</section>	
-				<section>			
-					<section>
-						<h2>History of "push" technology</h2>
-						<p>Adobe Flash&reg; Socket</p>
-						<p>HTTP Polling</p>
-						<p>AJAX long polling &amp; multipart-streaming</p>
-						<p>Forever Frame</p>
-						<p>JSONP Polling</p>
-						<aside class="notes">
-						Talk about the various technologies, forever frame, AJAX (go ms!), and the problems
-						with HTTP Long Polling on older browsers with the 2-connection per domain limit
-						</aside>
-					</section>
-					<section>
-						<h2>HTTP Polling</h2>
-						<p class="fragment">Browser sends HTTP requests at regular intervals</p>
-						<p class="fragment">Refreshes to the client are noisy</p>
-						<p class="fragment">Real-time data is not deterministic</p>
-						<aside class="notes">
-						With polling, the browser sends HTTP requests at regular intervals and immediately receives a response.  This technique was the first attempt for the browser to deliver real-time information. Obviously, this is a good solution if the exact interval of message delivery is known, because you can synchronize the client request to occur only when information is available on the server. However, real-time data is often not that predictable, making unnecessary requests inevitable and as a result, many connections are opened and closed needlessly in low-message-rate situations.
-						</aside>
-					</section>
-					<section>
-						<h2>HTTP Long Polling</h2>
-						<p class="fragment">Browser sends HTTP requests to server and request is kept open</p>
-						<p class="fragment">Could throttle out of control</p>
-						<aside class="notes">
-						With long-polling, the browser sends a request to the server and the server keeps the request open for a set period. If a notification is received within that period, a response containing the message is sent to the client. If a notification is not received within the set time period, the server sends a response to terminate the open request. It is important to understand, however, that when you have a high message volume, long-polling does not provide any substantial performance improvements over traditional polling.  In fact, it could be worse, because the long-polling might spin out of control into an unthrottled, continuous loop of immediate polls.
-						</aside>
-					</section>
-					<section>
-						<h2>Streaming</h2>
-						<p class="fragment">Browser sends complete request but server keeps open</p>
-						<p class="fragment">Response updated intermittently when new data arrives</p>
-						<p class="fragment">Firewalls and proxy servers may buffer causing latency</p>
-						<p class="fragment">HTTPS can be used but introduces additional resource cost</p>
-						<aside class="notes">
-						With streaming, the browser sends a complete request, but the server sends and maintains an open response that is continuously updated and kept open indefinitely (or for a set period of time). The response is then updated whenever a message is ready to be sent, but the server never signals to complete the response, thus keeping the connection open to deliver future messages. However, since streaming is still encapsulated in HTTP, intervening firewalls and proxy servers may choose to buffer the response, increasing the latency of the message delivery. Therefore, many streaming Comet solutions fall back to long-polling in case a buffering proxy server is detected. Alternatively, TLS (SSL) connections can be used to shield the response from being buffered, but in that case the setup and tear down of each connection taxes the available server resources more heavily.
-						</aside>
-					</section>
-					<section>
-						<h2>HTTP / REST call</h2>
-						<ul>
-							<li><strong>Use case A:</strong> 1,000 clients polling every second: Network throughput is (871 x 1,000) = 871,000 bytes = 6,968,000 bits per second (6.6 Mbps)</li>
-							<li><strong>Use case B:</strong> 10,000 clients polling every second: Network throughput is (871 x 10,000) = 8,710,000 bytes = 69,680,000 bits per second (66 Mbps)</li>
-							<li><strong>Use case C:</strong> 100,000 clients polling every 1 second: Network throughput is (871 x 100,000) = 87,100,000 bytes = 696,800,000 bits per second (665 Mbps)
-							</li>
-						</ul>
-						<p>&nbsp;</p>
-						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
-					</section>
-					<section>
-						<h2>WebSocket call</h2>
-						<ul>
-							<li><strong>Use case A:</strong> 1,000 clients receive 1 message per second: Network throughput is (2 x 1,000) = 2,000 bytes = 16,000 bits per second (0.015 Mbps)</li>
-							<li><strong>Use case B:</strong> 10,000 clients receive 1 message per second: Network throughput is (2 x 10,000) = 20,000 bytes = 160,000 bits per second (0.153 Mbps)</li>
-							<li><strong>Use case C:</strong> 100,000 clients receive 1 message per second: Network throughput is (2 x 100,000) = 200,000 bytes = 1,600,000 bits per second (1.526 Mbps)
-							</li>
-						</ul>
-						<p>&nbsp;</p>
-						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
-					</section>
-					<section>
-						<h2>Comparison Graph</h2>
-						<img src="images/poll-ws-compare.gif" />
-						<p>&nbsp;</p>
-						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
-					</section>
-					<section>
-						<h2>Latency Comparison</h2>
-						<img src="images/latency-comparison.gif" />
-						<p>&nbsp;</p>
-						<small>Source: <a href="http://www.websocket.org/quantum.html">http://www.websocket.org/quantum.html</a></small>
-					</section>
-				</section>
-				<section>
-				    <object type="image/svg+xml" width="300" height="300" data="images/HTML5-Logo.svg"></object>
+				<section>	
+					<section>		
+						<h2>Hello, World! Example</h2>
+						<pre>
+<code class="python">from bottle import route, run
 
-					<p>
-						<strong>HTML5 WebSocket</strong> gives you a full-duplex communications channel that operates over <strong>HTTP</strong> through a single socket.
-					</p>
-				</section>
-				<section>
-				    <object type="image/svg+xml" width="300" height="300" data="images/nodejs_logo.svg"></object>
+@route('/')
+def hello():
+    return "Hello, World!"
 
-					<h2>Standardizing on NodeJS</h2>
-					<p class="fragment">Single language</p>
-					<p class="fragment">Built in support for Websockets</p>
-					<p class="fragment">Client is JavaScript</p>
-				</section>
-				<section>
-					<h2>Installing NodeJS</h2>
-					<p><small>On Windows: <a href="http://nodejs.org/dist/latest/node.exe">http://nodejs.org/dist/latest/node.exe</a></small></p>
-					<p><small>On Mac OS X: <a href="http://nodejs.org/dist/latest/">http://nodejs.org/dist/latest/</a></small></p>
-					<p><small>On Linux: <a href="https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager">https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager</a></small></p>
-				</section>
-				<section>
+run(host='localhost', port=8080, debug=True)
+						</code></pre>	
+					</section>				
 					<section>
 						<h2>Hello, World</h2>
 						<p>Fun fact:</p>
@@ -225,308 +148,229 @@
 						stuff
 						</aside>
 					</section>
+				</section>
+				<section>
+					<h2>Install bottle.py</h2>
+					<p class="fragment">$ pip install bottle</p>
+					<p class="fragment">$ easy_install bottle</p>
+					<p class="fragment">$ apt-get install python-bottle</p>
+				</section>
+				<section>
 					<section>
-						<h2>Hello, World</h2>
-						<p>Let's take a look at the server</p>
-<pre><code>
-var WebSocketServer = require('ws').Server,
-    wss = new WebSocketServer({port: 8181});
-
-wss.on('connection', function(ws) {
-    ws.on('message', function(message) {
-		console.log(message);
-    });
-});
-</code></pre>
-					<p>Uses <a href="http://einaros.github.io/ws/">ws</a> nodejs library</p>
+						<h2>virtualenv Recommended</h2>
 					</section>
 					<section>
-					<h2>HTML5</h2>
-					<p>And the client HTML</p>
-<pre><code>
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;WebSocket Echo Demo&lt;/title&gt;
-    &lt;script&gt;
-        var ws = new WebSocket(&quot;ws://localhost:8181&quot;);
-        ws.onopen = function(e) {
-          console.log('Connection to server opened');
-        }            
-
-        function sendMessage() {
-           ws.send(document.getElementById('message').value);
-        }
-    &lt;/script&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;form onsubmit=&quot;sendMessage(); return false;&quot;&gt;
-        &lt;input type=&quot;text&quot; name=&quot;message&quot; style=&quot;width: 200px;&quot; id=&quot;message&quot; 
-          placeholder=&quot;Type text to echo in here&quot; value=&quot;&quot; autofocus/&gt;
-        &lt;input type=&quot;button&quot; value=&quot;Send!&quot; 
-          onclick=&quot;sendMessage();&quot; /&gt;
-  &lt;/form&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+						<h2>Installing virtualenv</h2>
+						<pre><code class="bash">$ pip install virtualenv</code></pre>
 					</section>
 					<section>
-						<h1>Developer Tools</h1>
-						<img src="images/chrome_client.png" />
+					<h2>Configuring virtualenv for API</h2>
+<pre><code class="bash">$ virtualenv bottleapi
+$ source bottleapi/bin/activate
+$ pip install -U bottle</code></pre>
 					</section>
 					<section>
-						<h1>Developer Tools</h1>
-						<p>Request Headers</p>
-<pre><code>
-GET ws://localhost:8181/ HTTP/1.1
-Pragma: no-cache
-Origin: null
-Host: localhost:8181
-Sec-WebSocket-Key: qalODNsUoRp+2K9FJty55Q==
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3)...
-Upgrade: websocket
-Sec-WebSocket-Extensions: x-webkit-deflate-frame
-Cache-Control: no-cache
-Connection: Upgrade
-Sec-WebSocket-Version: 13
+						<h2>virtualenv Directory Structure</h2>
+<pre><code class="bash">
+.
+└── bottleapi
+    ├── bin
+    ├── include
+    │   └── python2.7
+    └── lib
+        └── python2.7
+            └── site-packages
 </code></pre>
+						<p class="fragment">Segmenting our dependencies and allow testing multiple python environments</p>
+						<aside class="notes">
+						Lots of reasons to hate virtualenv, pip, etc but we won't go into detail here.  This configuration will work.  Can be done with a true virtualized environment such as Docker.
+						</aside>
 					</section>
 					<section>
-						<h1>Developer Tools</h1>
-						<p>Response Headers</p>
-<pre><code>
-HTTP/1.1 101 Switching Protocols
-Connection: Upgrade
-Sec-WebSocket-Accept: nambQ7W9imtAIYpzsw4hNNuGD58=
-Upgrade: websocket
+						<h2>requirements.txt</h2>
+<pre><code class="bash">
+$ pip freeze > requirements.txt
+$ cat requirements.txt
+bottle==0.12.7
 </code></pre>
+					</section>
+				</section>
+				<section>
+					<h2>First API call</h2>
+				</section>
+				<section>
+					<img src="images/logos/postman-logo.png" class="noborder" />				
+					<p><a href="https://www.getpostman.com">https://www.getpostman.com</a>
+					</p>
+					<p>
+					Google Chrome plugin for testing HTTP and REST endpoints via a simple interface
+					</p>
+				</section>
+				<section>
+					<section>
+						<h2>First API call</h2>
+						<aside class="notes">
+						Our example here should probably focus in on the stocks example.  Would we have to explain too much to get here though?
+						</aside>					
+					</section>
+					<section>
+						<h2>GET /stocks</h2>
+					</section>
+					<section>
+					<p>curl -X GET http://localhost:5001/stocks</p>
+					</section>
+					<section>
+						<h2>bottle decorators</h2>
+						<aside class="notes">@route, and the specialized @get, @post, etc</aside>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>POST for creation</h2>
+					</section>
+					<section>
+						<p>curl -x POST http://localhost:5001/stocks</p>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Overview of REST</h2>						
+					</section>
+					<section>
+						<h2>Nouns not verbs</h2>
+					</section>
+					<section>
+						<h2>Firewall, proxies and anything but GET or POST</h2>
+					</section>
+					<section>
+						<h2>HTTP already has verbs</h2>
+					</section>
+				</section>
+				<section>
 					<aside class="notes">
-					If response is working, then will get HTTP/1.1 101 Switching Protocols and a Conneciton: Upgrade
+					HATEOAS or HAL (http://stateless.co/hal_specification.html)
+					if we specify HATEOAS, we need to use XML, which sucks
 					</aside>
-					</section>
-					<section>
-						<h1>Demo</h1>
-					</section>
 				</section>
 				<section>
 					<section>
-						<h2>WebSocket API</h2>
-						<aside class="notes">
-						websocket stuff
-						</aside>
+						<h2>Collection REST calls</h2>
 					</section>
 					<section>
-						<h2>Intializing</h2>
-						<p>
-<pre><code>
-var ws = new WebSocket("ws://localhost:8181");
-</code></pre>
-						</p>
+						<h2>GET</h2>
 					</section>
 					<section>
-						<h2>WebSocket Constructor</h2>
-						<table width="100%">
-						<thead>
-							<th>Parameter Name</th>
-							<th>Description</th>
-						</thead>
-						<tbody>
-							<tr><td>URL</td><td>URL as <strong>ws://</strong> or <strong>wss://</strong> (if using TLS)</td></tr>
-							<tr><td>protocol (optional)</td><td>parameter specifying sub-protocols that may be used as Array or single string</td></tr>
-						</tbody>
-						</table>
+						<h2>POST</h2>
 					</section>
 					<section>
-						<h2>WebSocket Protocol</h2>
-						<p>Registered Protocols</p>
-						<small>
-						
-						In the spec for WebSocket RFC 6455, section 11.5 defines the Subprotocol Name Registry for IANA maintained registrations.
-						</small>
-						<p>Open Protocols</p>
-						<small>
-						In addition, you may use open protocols that are unregistered such as Extensible Messaging and Presence Protocol (XMPP) or Simple Text Oriented Message Protocol (STOMP), and various others.
-						</small>
-						<p>Custom</p>
-						<small>
-						You are free to design any protocol you like, as long as your server and client both support it. Recommended is to use names that contain the ASCII version of the domain name of the subprotocol’s originator. "chat.acme.com"
-						</small>
+						<h2>PUT, PATCH, DELETE</h2>
+					</section>
+				</section>				
+				<section>
+					<section>
+					<h2>CORS</h2>
 					</section>
 					<section>
-						<h2>WebSocket Events - Open</h2>
-<pre><code>
-ws.onopen = function(e) {
-	console.log("Connection established");
-};
-</code></pre>
-						<aside class="notes">
-						open event happens post connection established and server-client handshake complete
-						</aside>
-					</section>
-					<section>
-						<h2>WebSocket Events - Message</h2>
-<pre><code>
-ws.onmessage = function(e) {
-    console.log("Message received: " + e.data);
-};
-</code></pre>
-						<aside class="notes">
-						Send/Receive messages via the "message" event handler
-						</aside>
-					</section>
-					<section>
-						<h2>WebSocket Events - Error</h2>
-<pre><code>
-ws.onerror = function(e) {
-    console.log("WebSocket failure, error", e);
-    handleErrors(e);
-};
-</code></pre>
-						<aside class="notes">
-						Any error will give a close event, Reconnect if warranted.
-						Check attributes code and reason
-						</aside>
-					</section>
-					<section>
-						<h2>WebSocket Events - Close</h2>
-<pre><code>
-ws.onclose = function(e) {
-        console.log("WebSocket connection closed", e);
-}
-</code></pre>
-						<aside class="notes">
+						<h2>CORS via bottle.py decorator</h2>
+<pre><code class="python">
+import bottle
+from bottle import response
 
-						</aside>
-					</section>
-					<section>
-						<h2>WebSocket Method - Send</h2>
-<pre><code>
-function processEvent(e) {
-    if(ws.readyState === WebSocket.OPEN) {
-        // Socket open, send!
-        ws.send(e);
-    } else {
-        // Show an error, queue it for sending later, etc
-    }
-}</code></pre>
-						<p>readyState can be interrogated to ensure open connection before sending</p>
-						<aside class="notes">
+# the decorator
+def enable_cors(fn):
+    def _enable_cors(*args, **kwargs):
+        # set CORS headers
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
-						</aside>
-					</section>
-					<section>
-						<h2>WebSocket.readyState</h2>
-						<table width="100%">
-						<thead>
-							<th>Name</th>
-							<th>Value</th>
-							<th>Description</th>
-						</thead>
-						<tbody>
-							<tr><td>WebSocket.CONNECTING</td><td>0</td><td>Connection not yet established</td></tr>
-							<tr><td>WebSocket.OPEN</td><td>1</td><td>Connection is established and ready for messages</td></tr>
-							<tr><td>WebSocket.CLOSING</td><td>2</td><td>Connection is closing handshake</td></tr>
-							<tr><td>WebSocket.CLOSED</td><td>3</td><td>Connection has been closed or could not be opened</td></tr>
-						</tbody>
-						</table>
-					</section>
-					<section>
-						<h2>WebSocket.bufferedAmount</h2>
-						<p>The readonly attribute <code>bufferedAmount</code> represents the number of bytes of UTF-8 text that have been queued using <code>send()</code> method.</p>
-						<aside class="notes">
-						useful for large blocks of data being sent over the wire
-						</aside>
-					</section>
-					<section>
-						<h2>WebSocket.protocol</h2>
-						<p>Optional argument allows you to request via the client one or many sub-protocols.</p>
-						<p>Server ultimately decides the protocol to choose during handshake</p>
-						<aside class="notes">
-						Server decides which protocol to use when it sends the handshake back
-						</aside>
-					</section>
-					<section>
-						<h2>WebSocket Method - Close</h2>
-<pre><code>
-ws.close(1000, "Goodbye, World!");
-</code></pre>
-						<p>Optional offer <em>code</em> and <em>reason</em></p>
-						<aside class="notes">
-						can be empty of parameters, or pass code and reason optionally
-						</aside>
-					</section>
-					<section>
-						<h2>Checking browser support</h2>
-<pre><code>
-if (window.WebSocket) {
-    console.log("WebSocket: supported");
-    // ... code here for doing WebSocket stuff
-} else {
-    console.log("WebSocket: unsupported");
-    // ... fallback mode, or error back to user
-}
+        if bottle.request.method != 'OPTIONS':
+            # actual request; reply with the actual response
+            return fn(*args, **kwargs)
+
+    return _enable_cors
+
+
+app = bottle.app()
+
+@app.route('/cors', method=['OPTIONS', 'GET'])
+@enable_cors
+def lvambience():
+    response.headers['Content-type'] = 'application/json'
+    return '[1]'
+
+app.run(port=8001)
 </code></pre>
 					</section>
-				</section>
-				<section>
-					<h1>Demo</h1>
-				</section>
-				<section>
 					<section>
-						<h2>Browser Support</h2>
-						<table width="100%">
-						<thead>
-							<th>Browser</th>
-							<th>Minimum Version</th>
-						</thead>
-						<tbody>
-							<tr><td>Firefox</td><td>6.0</td></tr>
-							<tr><td>Chrome</td><td>14.0+</td></tr>
-							<tr><td>Safari</td><td>6.0+</td></tr>
-							<tr><td>Opera</td><td>12.1+</td></tr>
-							<tr><td>iOS Safari</td><td>6.0+</td></tr>
-							<tr><td>Android</td><td>4.4+</td></tr>
-						</tbody>
-						</table>					
-						<aside class="notes">
-						</aside>
+						<h2>CORS via bottle.py Plugin</h2>
+<pre><code class="python">
+import bottle
+from bottle import response
+
+class EnableCors(object):
+    name = 'enable_cors'
+    api = 2
+
+    def apply(self, fn, context):
+        def _enable_cors(*args, **kwargs):
+            # set CORS headers
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+            if bottle.request.method != 'OPTIONS':
+                # actual request; reply with the actual response
+                return fn(*args, **kwargs)
+
+        return _enable_cors
+
+
+app = bottle.app()
+
+@app.route('/cors', method=['OPTIONS', 'GET'])
+def lvambience():
+    response.headers['Content-type'] = 'application/json'
+    return '[1]'
+
+app.install(EnableCors())
+
+app.run(port=8001)
+</code></pre>			
 					</section>
 					<section>
-						<h2>Internet Explorer 10</h2>
-					    <object type="image/svg+xml" width="300" height="300" data="images/Internet_Explorer_10_logo.svg"></object>
-					</section>
-					<section>
-						<h2>Socket.IO</h2>
-						<p>
-						Socket.IO wraps a JavaScript API to allow for different transport mechanisms based on browser support.  It provides heartbeats, channels, disconnection notifications and various other things not provided by the WebSocket API.
-						</p>
-					</section>
-					<section>
-						<h2>SockJS</h2>
-						<p><a href="https://github.com/sockjs‎">SockJS</a>a> is a browser JavaScript library that provides a WebSocket-like object. SockJS gives you a coherent, cross-browser, Javascript API which creates a low latency, full duplex, cross-domain communication channel between the browser and the web server.</p>
-					</section>
-					<section>
-						<h2>web-socket-js</h2>
-						<p><a href="https://github.com/gimite/web-socket-js">web-socket-js</a> is a WebSocket implementation powered by Flash.</p>
+						<h2>OPTIONS and preflight</h2>
 					</section>
 				</section>
 				<section>
-					<h2>Alternatives to Websockets</h2>
-					<p class="fragment"><a href="http://socket.io">Socket.IO</a></p>
-					<p class="fragment"><a href="http://www.pusher.com">Pusher</a></p>
-					<p class="fragment"><a href="https://github.com/stevegraham/slanger">Slanger</a></p>
-					<p class="fragment"><a href="https://github.com/thunderpush/thunderpush">ThunderPush</a></p>
-					<p class="fragment"><a href="https://github.com/Atmosphere/atmosphere">Atmosphere</a></p>
-					<p class="fragment">And many more...</p>
+					<section>
+						<h2>Member REST calls</h2>
+					</section>
+					<section>
+						<h2>GET</h2>
+					</section>
+					<section>
+						<h2>DELETE</h2>
+					</section>
+					<section>
+						<h2>PUT, PATCH and POST</h2>
+					</section>
+				</section>
+				<section>
+					<h2>Authentication</h2>
+					<aside class="notes">
+					oauth2 impl would be cool, but possibly untenable, maybe we just do basic auth, show how that works, and advise the API be hit over https
+					</aside>
 				</section>
 				<section>
 					<h2>Helpful Links</h2>
-					<p><a href="http://www.html5rocks.com/en/tutorials/websockets/basics/">HTML5 Rocks</a></p>
-					<p><a href="http://www.websocket.org">WebSocket.org</a></p>
-					<p><a href="https://github.com/gimite/web-socket-js">web-socket-js</a></p>
-					<p><a href="http://socket.io">socket.io</a></p>
-					<p><a href="http://tools.ietf.org/html/rfc6455‎">WebSocket RFC 6455</a></p>
+					<p><a href="http://something.com">Something</a></p>
 				</section>
+				<section>
+					<h2>New WebSocket book</h2>
+					<p><a href="http://bit.ly/lombardi_websocket_book">bit.ly/lombardi_websocket_book</a></p>
+					<img src="images/WebSocket_comp.png" />
+				</section>				
 				<section>
 					<h1>Q &amp; A</h1>
 					<h3>Andrew Lombardi / <a href="http://www.twitter.com/kinabalu">@kinabalu</a></h3>
@@ -537,7 +381,7 @@ if (window.WebSocket) {
 						<small>#javascript</small>
 					</p>
 					<p>
-						<small><a href="https://github.com/kinabalu/real_time_with_websockets">https://github.com/kinabalu/real_time_with_websockets</a></small>
+						<small><a href="http://kinabalu.github.io/simple_apis_bottlepy_presentation">http://kinabalu.github.io/simple_apis_bottlepy_presentation</a></small>
 					</p>
 
 				</section>
