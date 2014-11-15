@@ -125,18 +125,37 @@
 						...oh, rakiq,oh holy martyr... (quote from a bulgarian rakia-dedicated song... actually most of the bulgarian popular music (a.k.a. chalga) is dedicated and/or result of this powerfull brew...)
 					</aside>
 				</section>	
+				<section>
+					<h2>What we'll cover</h2>
+					<ul>
+						<li class="fragment">Installing bottle and dependencies</li>
+						<li class="fragment">Building a RESTful example</li>
+						<li class="fragment">Testing calls to REST API</li>
+						<li class="fragment">Testing our code</li>
+						<li class="fragment">Integration with WSGI middleware</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Why bottle?</h2>
+					<ul>
+						<li class="fragment">Bottle is a fast and lightweight micro framework for Python.</li>
+						<li class="fragment">Single file module with no dependencies</li>
+						<li class="fragment">Provides routing, templates, utilities, and server integration</li>
+					</ul>
+				</section>					
 				<section>	
 					<section>		
 						<h2>Hello, World! Example</h2>
 						<pre>
 <code class="python">from bottle import route, run
 
-@route('/')
+@route('/hello')
 def hello():
     return "Hello, World!"
 
 run(host='localhost', port=8080, debug=True)
 						</code></pre>	
+						<p class="fragment">http://localhost:8080/hello</p>
 					</section>				
 					<section>
 						<h2>Hello, World</h2>
@@ -145,29 +164,48 @@ run(host='localhost', port=8080, debug=True)
 						The initial incarnation of everyones first application in a new language / technology was first written in Kernighan's 1972 A Tutorial Introduction to the Language B, and it was used to illustrate external variables in the language.
 						</blockquote>
 						<aside class="notes">
-						stuff
 						</aside>
+					</section>
+					<section>
+						<h2>Testing Example</h2>
+<pre><code class="python">
+from webtest import TestApp
+import helloworld
+
+def test_functional_helloworld():
+    app = TestApp(helloworld.app)
+
+	assert app.get('/hello').status == '200 OK'
+</code></pre>						
 					</section>
 				</section>
 				<section>
-					<h2>Install bottle.py</h2>
-					<p class="fragment">$ pip install bottle</p>
-					<p class="fragment">$ easy_install bottle</p>
-					<p class="fragment">$ apt-get install python-bottle</p>
-				</section>
-				<section>
 					<section>
-						<h2>virtualenv Recommended</h2>
+						<h2>Install bottle.py</h2>
+						<p class="fragment">$ pip install bottle</p>
+						<p class="fragment">$ easy_install bottle</p>
+						<p class="fragment">$ apt-get install python-bottle</p>
+					</section>
+					<section>
+						<h2>First install virtualenv</h2>
 					</section>
 					<section>
 						<h2>Installing virtualenv</h2>
 						<pre><code class="bash">$ pip install virtualenv</code></pre>
 					</section>
 					<section>
-					<h2>Configuring virtualenv for API</h2>
+					<h2>Configuring virtualenv for example</h2>
 <pre><code class="bash">$ virtualenv bottleapi
 $ source bottleapi/bin/activate
 $ pip install -U bottle</code></pre>
+					</section>
+					<section>
+						<h2>requirements.txt</h2>
+<pre><code class="bash">
+$ pip freeze > requirements.txt
+$ cat requirements.txt
+bottle==0.12.7
+</code></pre>
 					</section>
 					<section>
 						<h2>virtualenv Directory Structure</h2>
@@ -185,14 +223,6 @@ $ pip install -U bottle</code></pre>
 						<aside class="notes">
 						Lots of reasons to hate virtualenv, pip, etc but we won't go into detail here.  This configuration will work.  Can be done with a true virtualized environment such as Docker.
 						</aside>
-					</section>
-					<section>
-						<h2>requirements.txt</h2>
-<pre><code class="bash">
-$ pip freeze > requirements.txt
-$ cat requirements.txt
-bottle==0.12.7
-</code></pre>
 					</section>
 				</section>
 				<section>
@@ -217,7 +247,7 @@ bottle==0.12.7
 						<h2>GET /stocks</h2>
 					</section>
 					<section>
-					<p>curl -X GET http://localhost:5001/stocks</p>
+					<p>curl -X GET http://localhost:8080/stocks</p>
 					</section>
 					<section>
 						<h2>bottle decorators</h2>
