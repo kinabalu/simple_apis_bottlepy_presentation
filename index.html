@@ -131,7 +131,6 @@
 						<li class="fragment">Installing bottle and dependencies</li>
 						<li class="fragment">Building a RESTful example</li>
 						<li class="fragment">Testing calls to REST API</li>
-						<li class="fragment">Testing our code</li>
 						<li class="fragment">Integration with WSGI middleware</li>
 					</ul>
 				</section>
@@ -155,7 +154,9 @@ def hello():
 
 run(host='localhost', port=8080, debug=True)
 						</code></pre>	
-						<p class="fragment">http://localhost:8080/hello</p>
+						<p class="fragment">Save to <code>helloworld.py</code></p>
+						<p class="fragment"><code class="bash">$ python helloworld.py</code></p>
+						<p class="fragment"><a href="http://localhost:8080/hello">http://localhost:8080/hello</a></p>
 					</section>				
 					<section>
 						<h2>Hello, World</h2>
@@ -167,6 +168,21 @@ run(host='localhost', port=8080, debug=True)
 						</aside>
 					</section>
 					<section>
+						<h2>Hello, World testable</h2>
+<pre><code class="python">
+from bottle import Bottle, run
+
+app = Bottle()
+
+@app.route('/hello')
+def hello():
+    return "Hello, World!"
+
+if __name__ == '__main__':
+    run(app, host='localhost', port=8081, debug=True)
+</code></pre>						
+					</section>
+					<section>
 						<h2>Testing Example</h2>
 <pre><code class="python">
 from webtest import TestApp
@@ -175,7 +191,8 @@ import helloworld
 def test_functional_helloworld():
     app = TestApp(helloworld.app)
 
-	assert app.get('/hello').status == '200 OK'
+    assert app.get('/hello').status == '200 OK'
+    assert app.get('/hello').text == 'Hello, World!'
 </code></pre>						
 					</section>
 				</section>
@@ -226,40 +243,121 @@ bottle==0.12.7
 					</section>
 				</section>
 				<section>
-					<h2>First API call</h2>
-				</section>
-				<section>
-					<img src="images/logos/postman-logo.png" class="noborder" />				
-					<p><a href="https://www.getpostman.com">https://www.getpostman.com</a>
-					</p>
-					<p>
-					Google Chrome plugin for testing HTTP and REST endpoints via a simple interface
-					</p>
-				</section>
+					<h2>What we've covered</h2>
+					<ul>
+						<li><s>Installing bottle and dependencies</s></li>
+						<li>Building a RESTful example</li>
+						<li>Testing calls to REST API</li>
+						<li>Integration with WSGI middleware</li>
+					</ul>
+				</section>				
 				<section>
 					<section>
-						<h2>First API call</h2>
+						<h2>Our Stocks Example</h2>
+					</section>
+					<section>
+						<h2>Stocks Example - GET</h2>
+<pre><code class="python">
+from bottle import Bottle, run, response
+import json
+
+app = Bottle()
+
+@app.route('/stocks', method='GET')
+def list_stocks():
+    stocks = {
+        'num_results': 3,
+        'total_pages': 1,
+        'page': 1,
+        'objects': [
+            {"symbol": "AAPL", "price": 114.18},
+            {"symbol": "MSFT", "price": 49.58},
+            {"symbol": "GOOG", "price": 544.40}
+        ]
+    }
+    response.content_type = 'application/json'    
+    return json.dumps(stocks)
+
+if __name__ == '__main__':
+    run(app, host='localhost', port=8080, debug=True)
+</code></pre>
+					</section>
+					<section>
+						<h2>curl to GET /stocks</h2>
+<pre><code class="bash">
+$ curl -X GET http://localhost:8080/stocks
+{"total_pages": 1, "objects": [{"symbol": "AAPL", "price": 114.18}, {"symbol": "MSFT", "price": 49.58}, {"symbol": "GOOG", "price": 544.4}], "num_results": 3, "page": 1}
+</code></pre>
+					</section>
+					<section>
+						<h2>Alternative to @route</h2>
+						<table width="100%">
+							<thead>
+								<th>Original</th>
+								<th>Alternate</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td><code>@app.route('/sample', method='GET')</code></td>
+									<td><code>@app.get('/sample')</code></td>
+								</tr>
+								<tr>
+									<td><code>@app.route('/sample', method='POST')</code></td>
+									<td><code>@app.post('/sample')</code></td>
+								</tr>
+								<tr>
+									<td><code>@app.route('/sample', method='PUT')</code></td>
+									<td><code>@app.put('/sample')</code></td>
+								</tr>
+								<tr>
+									<td><code>@app.route('/sample', method='DELETE')</code></td>
+									<td><code>@app.delete('/sample')</code></td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
+					<section>
+						<img src="images/logos/postman-logo.png" class="noborder" />				
+						<p><a href="https://www.getpostman.com">https://www.getpostman.com</a>
+						</p>
+						<p>
+						Google Chrome plugin for testing HTTP and REST endpoints via a simple interface
+						</p>
+					</section>
+					<section>
+						<img src="images/screens/postman-sample-ss.png" class="noborder" />
 						<aside class="notes">
-						Our example here should probably focus in on the stocks example.  Would we have to explain too much to get here though?
-						</aside>					
-					</section>
-					<section>
-						<h2>GET /stocks</h2>
-					</section>
-					<section>
-					<p>curl -X GET http://localhost:8080/stocks</p>
-					</section>
-					<section>
-						<h2>bottle decorators</h2>
-						<aside class="notes">@route, and the specialized @get, @post, etc</aside>
-					</section>
+						Let's open up Postman and run the demo and the test together so they can see it working
+						</aside>
+					</section>					
 				</section>
 				<section>
 					<section>
-						<h2>POST for creation</h2>
+						<h2>Adding new stocks</h2>
 					</section>
 					<section>
-						<p>curl -x POST http://localhost:5001/stocks</p>
+						<h2>Adding new stocks</h2>
+<pre><code class="python">
+from bottle import Bottle, run, request, response
+
+...
+
+@app.route('/stocks', method='POST')
+def add_stock():
+    try:
+        postdata = request.body.read()
+        symbol_request = json.loads(postdata)
+        stocks.append({"symbol": symbol_request['symbol'], "price": 75.42})
+    except TypeError:
+        abort(500, "Invalid content passed")
+</code></pre>
+					</section>
+					<section>
+						<h2>curl POST test</h2>
+<pre><code class="python">curl -x POST --data '{"symbol": "FB"}' http://localhost:8080/stocks</code></pre>
+						<aside class="notes">
+						Consider appending this to add a functional test using WebTest
+						</aside>
 					</section>
 				</section>
 				<section>
@@ -268,21 +366,103 @@ bottle==0.12.7
 					</section>
 					<section>
 						<h2>Nouns not verbs</h2>
+						<table width="100%">
+						<thead>
+							<th>Bad</th>
+							<th>Good</th>
+						</thead>
+						<tbody>
+						<tr>
+							<td>getStocks</td>
+							<td>GET /stocks</td>
+						</tr>
+						<tr>
+							<td>addStock</td>
+							<td>POST /stocks</td>
+						</tr>
+						<tr>
+							<td>removeStock</td>
+							<td>DELETE /stocks/AAPL</td>
+						</tr>
+						<tr>
+							<td>getStock</td>
+							<td>GET /stocks/AAPL</td>
+						</tr>
+						</tbody>
+						</table>
 					</section>
+					<section>
+						<h2>HTTP methods = verbs</h2>
+						<p><a href="http://example.com/resources">http://example.com/resources</a></p>
+						<table width="100%">
+						<thead>
+							<th>Method</th>
+							<th>Action</th>
+						</thead>
+						<tbody>
+						<tr>
+							<td><h1>GET</h1></td>
+							<td>List the members of the collection</td>
+						</tr>
+						<tr>
+							<td><h1>PUT</h1></td>
+							<td>Replace the entire collection with another collection</td>
+						</tr>
+						<tr>
+							<td><h1>POST</h1></td>
+							<td>Create new entry in collection</td>
+						</tr>
+						<tr>
+							<td><h1>DELETE</h1></td>
+							<td>Delete the entire collection</td>
+						</tr>
+						</tbody>
+						</table>
+					</section>
+					<section>
+						<h2>HTTP methods = verbs</h2>
+						<p><a href="http://example.com/resources/42">http://example.com/resources/42</a></p>
+						<table width="100%">
+						<thead>
+							<th>Method</th>
+							<th>Action</th>
+						</thead>
+						<tbody>
+						<tr>
+							<td><h1>GET</h1></td>
+							<td>Return the referenced member of the collection</td>
+						</tr>
+						<tr>
+							<td><h1>PUT</h1></td>
+							<td>Create or update the referenced member of the collection</td>
+						</tr>
+						<tr>
+							<td><h1>POST</h1></td>
+							<td>Generally unused on specific members</td>
+						</tr>
+						<tr>
+							<td><h1>DELETE</h1></td>
+							<td>Delete the referenced member of collection</td>
+						</tr>
+						</tbody>
+						</table>
+					</section>					
 					<section>
 						<h2>Firewall, proxies and anything but GET or POST</h2>
-					</section>
-					<section>
-						<h2>HTTP already has verbs</h2>
-					</section>
-					<section>
-					<aside class="notes">
-						6 constraints of REST
-						https://blog.apigee.com/detail/api_design_ruminating_over_rest
-					</aside>
+						<aside class="notes">
+							6 constraints of REST
+							https://blog.apigee.com/detail/api_design_ruminating_over_rest
+						</aside>
 					</section>
 				</section>
 				<section>
+					<section>
+						<h2>Get specific stock</h2>
+<pre><code class="python">
+</code></pre>						
+				</section>
+				<section>
+					<h2>HATEOAS and HAL</h2>
 					<aside class="notes">
 					HATEOAS or HAL (http://stateless.co/hal_specification.html)
 					if we specify HATEOAS, we need to use XML, which sucks
@@ -305,7 +485,28 @@ bottle==0.12.7
 				</section>				
 				<section>
 					<section>
-					<h2>CORS</h2>
+					<h2>Serving our API from different domain</h2>
+					</section>
+					<section>
+						<h2>CORS</h2>
+						<ul>
+							<li class="fragment"><strong>C . </strong>ross</li>
+							<li class="fragment"><strong>O . </strong>rigin</li>
+							<li class="fragment"><strong>R . </strong>esource</li>
+							<li class="fragment"><strong>S . </strong>haring</li>
+						</ul>
+					</section>
+					<section>
+						<h2>OPTIONS and preflight</h2>
+						<p class="fragment">More complex CORS request comes with preflight</p>
+						<ul>
+							<li class="fragment">Custom headers are used in the request</li>
+							<li class="fragment">An HTTP method other than GET, HEAD, or POST used</li>
+							<li class="fragment">POST used but Content-Type other than <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, <code>text/plain</code></li>
+						</ul>
+						<aside class="notes">
+						This was shown to be a problem and head scratcher because certain javascript libraries were sending a custom header 'X-Requested-With' when issuing a request and it triggered the preflight.
+						</aside>
 					</section>
 					<section>
 						<h2>CORS via bottle.py decorator</h2>
@@ -375,9 +576,6 @@ app.install(EnableCors())
 app.run(port=8001)
 </code></pre>			
 					</section>
-					<section>
-						<h2>OPTIONS and preflight</h2>
-					</section>
 				</section>
 				<section>
 					<section>
@@ -399,6 +597,31 @@ app.run(port=8001)
 					oauth2 impl would be cool, but possibly untenable, maybe we just do basic auth, show how that works, and advise the API be hit over https
 					</aside>
 				</section>
+				<section>
+					<h2>Middleware Integration</h2>
+<pre><code class="python">
+from cherrypy import wsgiserver
+from helloworld import app
+
+d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
+server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8080), d)
+
+if __name__ == '__main__':
+   try:
+      server.start()
+   except KeyboardInterrupt:
+      server.stop()
+</code></pre>
+				</section>
+				<section>
+					<h2>What we've covered</h2>
+					<ul>
+						<li class="fragment"><s>Installing bottle and dependencies</s></li>
+						<li class="fragment"><s>Building a RESTful example</s></li>
+						<li class="fragment"><s>Testing calls to REST API</s></li>
+						<li class="fragment"><s>Integration with WSGI middleware</s></li>
+					</ul>
+				</section>				
 				<section>
 					<h2>Helpful Links</h2>
 					<p><a href="http://something.com">Something</a></p>
