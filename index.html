@@ -1,151 +1,151 @@
 <!doctype html>
 <html lang="en">
 
-	<head>
-		<meta charset="utf-8">
+    <head>
+        <meta charset="utf-8">
 
-		<title>Simple API's with bottle.py</title>
+        <title>Simple API's with bottle.py</title>
 
-		<meta name="description" content="A presentation about building simple and effective API's using bottle.py, the microframework of python microframeworks">
-		<meta name="author" content="Andrew Lombardi">
+        <meta name="description" content="A presentation about building simple and effective API's using bottle.py, the microframework of python microframeworks">
+        <meta name="author" content="Andrew Lombardi">
 
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
-		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
-		<link rel="stylesheet" href="css/reset.css">
-		<!-- For syntax highlighting -->
-		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+        <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+        <link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+        <link rel="stylesheet" href="css/reset.css">
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
 
-		<link rel="stylesheet" href="reveal.js-fullscreen-img/fullscreen-img.css" />
+        <link rel="stylesheet" href="reveal.js-fullscreen-img/fullscreen-img.css" />
 
-		<style>
-			.button {
-				-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-				-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-				box-shadow:inset 0px 1px 0px 0px #ffffff;
-				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-				background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
-				background-color:#ededed;
-				-moz-border-radius:6px;
-				-webkit-border-radius:6px;
-				border-radius:6px;
-				border:1px solid #dcdcdc;
-				display:inline-block;
-				color:#777777;
-				font-family:arial;
-				font-size:15px;
-				font-weight:bold;
-				padding:6px 24px;
-				text-decoration:none;
-				text-shadow:1px 1px 0px #ffffff;
-			}.button:hover {
-				background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
-				background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
-				filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
-				background-color:#dfdfdf;
-			}.button:active {
-				position:relative;
-				top:1px;
-			}
-
-
-			table { border-collapse: collapse;
-			font-family: Futura, Arial, sans-serif; }
-			.reveal th, td { padding: 1em; }
-			.reveal th, .reveal thead { background: #000; color: #fff; border: 1px solid #fff; }
-			/*.reveal tr:nth-child(odd) { background: #ccc; }*/
-			.reveal tr:hover { background: #aaa; }
-			.reveal td { border: 1px solid #777; }
-			.reveal th { font-size: 0.75em;}
-			.reveal td { font-size: 0.5em; font-weight: normal; padding: 1em;}
-			.reveal table { border: 1px solid #777; }
-
-			.reveal .noborder { border: none; }
-		</style>
-
-		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
-		<script>
-			//document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+        <style>
+            .button {
+                -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+                -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+                box-shadow:inset 0px 1px 0px 0px #ffffff;
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+                background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+                filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+                background-color:#ededed;
+                -moz-border-radius:6px;
+                -webkit-border-radius:6px;
+                border-radius:6px;
+                border:1px solid #dcdcdc;
+                display:inline-block;
+                color:#777777;
+                font-family:arial;
+                font-size:15px;
+                font-weight:bold;
+                padding:6px 24px;
+                text-decoration:none;
+                text-shadow:1px 1px 0px #ffffff;
+            }.button:hover {
+                background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+                background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+                filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+                background-color:#dfdfdf;
+            }.button:active {
+                position:relative;
+                top:1px;
+            }
 
 
-		</script>
+            table { border-collapse: collapse;
+            font-family: Futura, Arial, sans-serif; }
+            .reveal th, td { padding: 1em; }
+            .reveal th, .reveal thead { background: #000; color: #fff; border: 1px solid #fff; }
+            /*.reveal tr:nth-child(odd) { background: #ccc; }*/
+            .reveal tr:hover { background: #aaa; }
+            .reveal td { border: 1px solid #777; }
+            .reveal th { font-size: 0.75em;}
+            .reveal td { font-size: 0.5em; font-weight: normal; padding: 1em;}
+            .reveal table { border: 1px solid #777; }
 
-		<!--[if lt IE 9]>
-		<script src="reveal.js/lib/js/html5shiv.js"></script>
-		<![endif]-->
-	</head>
+            .reveal .noborder { border: none; }
+        </style>
 
-	<body>
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
+            //document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
 
-		<div class="reveal">
 
-			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
+        </script>
 
-				<section>
-				<img src="images/bottlepy_logo.png" class="noborder"/>
+        <!--[if lt IE 9]>
+        <script src="reveal.js/lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
 
-					<h2>Simple API's with bottle.py</h2>
-					<p>
-						<small><a href="http://mysticcoders.com">Andrew Lombardi</a> / <a href="http://twitter.com/kinabalu">@kinabalu</a></small>
-					</p>
-					<p>
-						<small><a href="http://mysticcoders.com">Mystic Coders, LLC</a></small>
-					</p>
-				</section>
+    <body>
 
-				<section>
-					<section>
-						<h2>About Me</h2>
-						<img src="images/me_and_j.jpg" />
-					</section>
-					<section>
-						<h2>About Me</h2>
-						<p class="fragment">14 Years in Business</p>
-						<p class="fragment">Software Consultants</p>
-						<p class="fragment">International Speakers</p>
-						<p class="fragment">Training</p>
-						<p class="fragment">App Developer (Java, JavaScript, Python, Objective-C)</p>
-						<p>&nbsp;</p>
-						<p class="fragment"><strong>To our success!</strong></p>
-					</section>
-				</section>
-				<section fullscreen-img="images/rakia_63.png" />
-					<aside class="notes">
-						Known side effects: 
-						- You may start to sing. 
-						- You can't find your way home. 
-						- It's possible you may forget your name and/or get lost in your own home. 
-						- If you drink more than 1 liter you may collapse. The bulgarian term for this condition is "Ïèÿí íà ñâèíÿ" (transcription "Pian na svinia", meaning "Drunk like a pig").
-						...oh, rakiq,oh holy martyr... (quote from a bulgarian rakia-dedicated song... actually most of the bulgarian popular music (a.k.a. chalga) is dedicated and/or result of this powerfull brew...)
-					</aside>
-				</section>	
-				<section>
-					<h2>What we'll cover</h2>
-					<ul>
-						<li class="fragment">Installing bottle and dependencies</li>
-						<li class="fragment">Building a RESTful example</li>
-						<li class="fragment">Testing calls to REST API</li>
-						<li class="fragment">Integration with WSGI middleware</li>
-					</ul>
-				</section>
-				<section>
-					<h2>Why bottle?</h2>
-					<ul>
-						<li class="fragment">Bottle is a fast and lightweight micro framework for Python.</li>
-						<li class="fragment">Single file module with no dependencies</li>
-						<li class="fragment">Provides routing, templates, utilities, and server integration</li>
-					</ul>
-				</section>					
-				<section>	
-					<section>		
-						<h2>Hello, World! Example</h2>
-						<pre>
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+
+                <section>
+                <img src="images/bottlepy_logo.png" class="noborder"/>
+
+                    <h2>Simple API's with bottle.py</h2>
+                    <p>
+                        <small><a href="http://mysticcoders.com">Andrew Lombardi</a> / <a href="http://twitter.com/kinabalu">@kinabalu</a></small>
+                    </p>
+                    <p>
+                        <small><a href="http://mysticcoders.com">Mystic Coders, LLC</a></small>
+                    </p>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>About Me</h2>
+                        <img src="images/me_and_j.jpg" />
+                    </section>
+                    <section>
+                        <h2>About Me</h2>
+                        <p class="fragment">14 Years in Business</p>
+                        <p class="fragment">Software Consultants</p>
+                        <p class="fragment">International Speakers</p>
+                        <p class="fragment">Training</p>
+                        <p class="fragment">App Developer (Java, JavaScript, Python, Objective-C)</p>
+                        <p>&nbsp;</p>
+                        <p class="fragment"><strong>To our success!</strong></p>
+                    </section>
+                </section>
+                <section fullscreen-img="images/rakia_63.png" />
+                    <aside class="notes">
+                        Known side effects: 
+                        - You may start to sing. 
+                        - You can't find your way home. 
+                        - It's possible you may forget your name and/or get lost in your own home. 
+                        - If you drink more than 1 liter you may collapse. The bulgarian term for this condition is "Ïèÿí íà ñâèíÿ" (transcription "Pian na svinia", meaning "Drunk like a pig").
+                        ...oh, rakiq,oh holy martyr... (quote from a bulgarian rakia-dedicated song... actually most of the bulgarian popular music (a.k.a. chalga) is dedicated and/or result of this powerfull brew...)
+                    </aside>
+                </section>  
+                <section>
+                    <h2>What we'll cover</h2>
+                    <ul>
+                        <li class="fragment">Installing bottle and dependencies</li>
+                        <li class="fragment">Building a RESTful example</li>
+                        <li class="fragment">Testing calls to REST API</li>
+                        <li class="fragment">Integration with WSGI middleware</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Why bottle?</h2>
+                    <ul>
+                        <li class="fragment">Bottle is a fast and lightweight micro framework for Python.</li>
+                        <li class="fragment">Single file module with no dependencies</li>
+                        <li class="fragment">Provides routing, templates, utilities, and server integration</li>
+                    </ul>
+                </section>                  
+                <section>   
+                    <section>       
+                        <h2>Hello, World! Example</h2>
+                        <pre>
 <code class="python">from bottle import route, run
 
 @route('/hello')
@@ -153,22 +153,22 @@ def hello():
     return "Hello, World!"
 
 run(host='localhost', port=8080, debug=True)
-						</code></pre>	
-						<p class="fragment">Save to <code>helloworld.py</code></p>
-						<p class="fragment"><code class="bash">$ python helloworld.py</code></p>
-						<p class="fragment"><a href="http://localhost:8080/hello">http://localhost:8080/hello</a></p>
-					</section>				
-					<section>
-						<h2>Hello, World</h2>
-						<p>Fun fact:</p>
-						<blockquote>
-						The initial incarnation of everyones first application in a new language / technology was first written in Kernighan's 1972 A Tutorial Introduction to the Language B, and it was used to illustrate external variables in the language.
-						</blockquote>
-						<aside class="notes">
-						</aside>
-					</section>
-					<section>
-						<h2>Hello, World testable</h2>
+                        </code></pre>   
+                        <p class="fragment">Save to <code>helloworld.py</code></p>
+                        <p class="fragment"><code class="bash">$ python helloworld.py</code></p>
+                        <p class="fragment"><a href="http://localhost:8080/hello">http://localhost:8080/hello</a></p>
+                    </section>              
+                    <section>
+                        <h2>Hello, World</h2>
+                        <p>Fun fact:</p>
+                        <blockquote>
+                        The initial incarnation of everyones first application in a new language / technology was first written in Kernighan's 1972 A Tutorial Introduction to the Language B, and it was used to illustrate external variables in the language.
+                        </blockquote>
+                        <aside class="notes">
+                        </aside>
+                    </section>
+                    <section>
+                        <h2>Hello, World testable</h2>
 <pre><code class="python">
 from bottle import Bottle, run
 
@@ -180,10 +180,10 @@ def hello():
 
 if __name__ == '__main__':
     run(app, host='localhost', port=8081, debug=True)
-</code></pre>						
-					</section>
-					<section>
-						<h2>Testing Example</h2>
+</code></pre>                       
+                    </section>
+                    <section>
+                        <h2>Testing Example</h2>
 <pre><code class="python">
 from webtest import TestApp
 import helloworld
@@ -193,39 +193,39 @@ def test_functional_helloworld():
 
     assert app.get('/hello').status == '200 OK'
     assert app.get('/hello').text == 'Hello, World!'
-</code></pre>						
-					</section>
-				</section>
-				<section>
-					<section>
-						<h2>Install bottle.py</h2>
-						<p class="fragment">$ pip install bottle</p>
-						<p class="fragment">$ easy_install bottle</p>
-						<p class="fragment">$ apt-get install python-bottle</p>
-					</section>
-					<section>
-						<h2>First install virtualenv</h2>
-					</section>
-					<section>
-						<h2>Installing virtualenv</h2>
-						<pre><code class="bash">$ pip install virtualenv</code></pre>
-					</section>
-					<section>
-					<h2>Configuring virtualenv for example</h2>
+</code></pre>                       
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Install bottle.py</h2>
+                        <p class="fragment">$ pip install bottle</p>
+                        <p class="fragment">$ easy_install bottle</p>
+                        <p class="fragment">$ apt-get install python-bottle</p>
+                    </section>
+                    <section>
+                        <h2>First install virtualenv</h2>
+                    </section>
+                    <section>
+                        <h2>Installing virtualenv</h2>
+                        <pre><code class="bash">$ pip install virtualenv</code></pre>
+                    </section>
+                    <section>
+                    <h2>Configuring virtualenv for example</h2>
 <pre><code class="bash">$ virtualenv bottleapi
 $ source bottleapi/bin/activate
 $ pip install -U bottle</code></pre>
-					</section>
-					<section>
-						<h2>requirements.txt</h2>
+                    </section>
+                    <section>
+                        <h2>requirements.txt</h2>
 <pre><code class="bash">
 $ pip freeze > requirements.txt
 $ cat requirements.txt
 bottle==0.12.7
 </code></pre>
-					</section>
-					<section>
-						<h2>virtualenv Directory Structure</h2>
+                    </section>
+                    <section>
+                        <h2>virtualenv Directory Structure</h2>
 <pre><code class="bash">
 .
 └── bottleapi
@@ -236,27 +236,27 @@ bottle==0.12.7
         └── python2.7
             └── site-packages
 </code></pre>
-						<p class="fragment">Segmenting our dependencies and allow testing multiple python environments</p>
-						<aside class="notes">
-						Lots of reasons to hate virtualenv, pip, etc but we won't go into detail here.  This configuration will work.  Can be done with a true virtualized environment such as Docker.
-						</aside>
-					</section>
-				</section>
-				<section>
-					<h2>What we've covered</h2>
-					<ul>
-						<li><s>Installing bottle and dependencies</s></li>
-						<li>Building a RESTful example</li>
-						<li>Testing calls to REST API</li>
-						<li>Integration with WSGI middleware</li>
-					</ul>
-				</section>				
-				<section>
-					<section>
-						<h2>Our Stocks Example</h2>
-					</section>
-					<section>
-						<h2>Stocks Example - GET</h2>
+                        <p class="fragment">Segmenting our dependencies and allow testing multiple python environments</p>
+                        <aside class="notes">
+                        Lots of reasons to hate virtualenv, pip, etc but we won't go into detail here.  This configuration will work.  Can be done with a true virtualized environment such as Docker.
+                        </aside>
+                    </section>
+                </section>
+                <section>
+                    <h2>What we've covered</h2>
+                    <ul>
+                        <li><s>Installing bottle and dependencies</s></li>
+                        <li>Building a RESTful example</li>
+                        <li>Testing calls to REST API</li>
+                        <li>Integration with WSGI middleware</li>
+                    </ul>
+                </section>              
+                <section>
+                    <section>
+                        <h2>Our Stocks Example</h2>
+                    </section>
+                    <section>
+                        <h2>Stocks Example - GET</h2>
 <pre><code class="python">
 from bottle import Bottle, run, response
 import json
@@ -281,62 +281,62 @@ def list_stocks():
 if __name__ == '__main__':
     run(app, host='localhost', port=8080, debug=True)
 </code></pre>
-					</section>
-					<section>
-						<h2>curl to GET /stocks</h2>
+                    </section>
+                    <section>
+                        <h2>curl to GET /stocks</h2>
 <pre><code class="bash">
 $ curl -X GET http://localhost:8080/stocks
 {"total_pages": 1, "objects": [{"symbol": "AAPL", "price": 114.18}, {"symbol": "MSFT", "price": 49.58}, {"symbol": "GOOG", "price": 544.4}], "num_results": 3, "page": 1}
 </code></pre>
-					</section>
-					<section>
-						<h2>Alternative to @route</h2>
-						<table width="100%">
-							<thead>
-								<th>Original</th>
-								<th>Alternate</th>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>@app.route('/sample', method='GET')</code></td>
-									<td><code>@app.get('/sample')</code></td>
-								</tr>
-								<tr>
-									<td><code>@app.route('/sample', method='POST')</code></td>
-									<td><code>@app.post('/sample')</code></td>
-								</tr>
-								<tr>
-									<td><code>@app.route('/sample', method='PUT')</code></td>
-									<td><code>@app.put('/sample')</code></td>
-								</tr>
-								<tr>
-									<td><code>@app.route('/sample', method='DELETE')</code></td>
-									<td><code>@app.delete('/sample')</code></td>
-								</tr>
-							</tbody>
-						</table>
-					</section>
-					<section>
-						<img src="images/logos/postman-logo.png" class="noborder" />				
-						<p><a href="https://www.getpostman.com">https://www.getpostman.com</a>
-						</p>
-						<p>
-						Google Chrome plugin for testing HTTP and REST endpoints via a simple interface
-						</p>
-					</section>
-					<section>
-						<img src="images/screens/postman-sample-ss.png" class="noborder" />
-						<aside class="notes">
-						Let's open up Postman and run the demo and the test together so they can see it working
-						</aside>
-					</section>					
-				</section>
-				<section>
-					<section>
-						<h2>Adding new stocks</h2>
-					</section>
-					<section>
-						<h2>Adding new stocks</h2>
+                    </section>
+                    <section>
+                        <h2>Alternative to @route</h2>
+                        <table width="100%">
+                            <thead>
+                                <th>Original</th>
+                                <th>Alternate</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>@app.route('/sample', method='GET')</code></td>
+                                    <td><code>@app.get('/sample')</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>@app.route('/sample', method='POST')</code></td>
+                                    <td><code>@app.post('/sample')</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>@app.route('/sample', method='PUT')</code></td>
+                                    <td><code>@app.put('/sample')</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>@app.route('/sample', method='DELETE')</code></td>
+                                    <td><code>@app.delete('/sample')</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <img src="images/logos/postman-logo.png" class="noborder" />                
+                        <p><a href="https://www.getpostman.com">https://www.getpostman.com</a>
+                        </p>
+                        <p>
+                        Google Chrome plugin for testing HTTP and REST endpoints via a simple interface
+                        </p>
+                    </section>
+                    <section>
+                        <img src="images/screens/postman-sample-ss.png" class="noborder" />
+                        <aside class="notes">
+                        Let's open up Postman and run the demo and the test together so they can see it working
+                        </aside>
+                    </section>                  
+                </section>
+                <section>
+                    <section>
+                        <h2>Adding new stocks</h2>
+                    </section>
+                    <section>
+                        <h2>Adding new stocks</h2>
 <pre><code class="python">
 from bottle import Bottle, run, request, response
 
@@ -351,165 +351,235 @@ def add_stock():
     except TypeError:
         abort(500, "Invalid content passed")
 </code></pre>
-					</section>
-					<section>
-						<h2>curl POST test</h2>
+                    </section>
+                    <section>
+                        <h2>curl POST test</h2>
 <pre><code class="python">curl -x POST --data '{"symbol": "FB"}' http://localhost:8080/stocks</code></pre>
-						<aside class="notes">
-						Consider appending this to add a functional test using WebTest
-						</aside>
-					</section>
-				</section>
-				<section>
-					<section>
-						<h2>Overview of REST</h2>						
-					</section>
-					<section>
-						<h2>Nouns not verbs</h2>
-						<table width="100%">
-						<thead>
-							<th>Bad</th>
-							<th>Good</th>
-						</thead>
-						<tbody>
-						<tr>
-							<td>getStocks</td>
-							<td>GET /stocks</td>
-						</tr>
-						<tr>
-							<td>addStock</td>
-							<td>POST /stocks</td>
-						</tr>
-						<tr>
-							<td>removeStock</td>
-							<td>DELETE /stocks/AAPL</td>
-						</tr>
-						<tr>
-							<td>getStock</td>
-							<td>GET /stocks/AAPL</td>
-						</tr>
-						</tbody>
-						</table>
-					</section>
-					<section>
-						<h2>HTTP methods = verbs</h2>
-						<p><a href="http://example.com/resources">http://example.com/resources</a></p>
-						<table width="100%">
-						<thead>
-							<th>Method</th>
-							<th>Action</th>
-						</thead>
-						<tbody>
-						<tr>
-							<td><h1>GET</h1></td>
-							<td>List the members of the collection</td>
-						</tr>
-						<tr>
-							<td><h1>PUT</h1></td>
-							<td>Replace the entire collection with another collection</td>
-						</tr>
-						<tr>
-							<td><h1>POST</h1></td>
-							<td>Create new entry in collection</td>
-						</tr>
-						<tr>
-							<td><h1>DELETE</h1></td>
-							<td>Delete the entire collection</td>
-						</tr>
-						</tbody>
-						</table>
-					</section>
-					<section>
-						<h2>HTTP methods = verbs</h2>
-						<p><a href="http://example.com/resources/42">http://example.com/resources/42</a></p>
-						<table width="100%">
-						<thead>
-							<th>Method</th>
-							<th>Action</th>
-						</thead>
-						<tbody>
-						<tr>
-							<td><h1>GET</h1></td>
-							<td>Return the referenced member of the collection</td>
-						</tr>
-						<tr>
-							<td><h1>PUT</h1></td>
-							<td>Create or update the referenced member of the collection</td>
-						</tr>
-						<tr>
-							<td><h1>POST</h1></td>
-							<td>Generally unused on specific members</td>
-						</tr>
-						<tr>
-							<td><h1>DELETE</h1></td>
-							<td>Delete the referenced member of collection</td>
-						</tr>
-						</tbody>
-						</table>
-					</section>					
-					<section>
-						<h2>Firewall, proxies and anything but GET or POST</h2>
-						<aside class="notes">
-							6 constraints of REST
-							https://blog.apigee.com/detail/api_design_ruminating_over_rest
-						</aside>
-					</section>
-				</section>
-				<section>
-					<section>
-						<h2>Get specific stock</h2>
+                        <aside class="notes">
+                        Consider appending this to add a functional test using WebTest
+                        </aside>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Overview of REST</h2>                       
+                    </section>
+                    <section>
+                        <h2>Nouns not verbs</h2>
+                        <table width="100%">
+                        <thead>
+                            <th>Bad</th>
+                            <th>Good</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>getStocks</td>
+                            <td>GET /stocks</td>
+                        </tr>
+                        <tr>
+                            <td>addStock</td>
+                            <td>POST /stocks</td>
+                        </tr>
+                        <tr>
+                            <td>removeStock</td>
+                            <td>DELETE /stocks/AAPL</td>
+                        </tr>
+                        <tr>
+                            <td>getStock</td>
+                            <td>GET /stocks/AAPL</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h2>HTTP methods = verbs</h2>
+                        <p><a href="http://example.com/resources">http://example.com/resources</a></p>
+                        <table width="100%">
+                        <thead>
+                            <th>Method</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><h1>GET</h1></td>
+                            <td>List the members of the collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>PUT</h1></td>
+                            <td>Replace the entire collection with another collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>POST</h1></td>
+                            <td>Create new entry in collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>DELETE</h1></td>
+                            <td>Delete the entire collection</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </section>
+                    <section>
+                        <h2>HTTP methods = verbs</h2>
+                        <p><a href="http://example.com/resources/42">http://example.com/resources/42</a></p>
+                        <table width="100%">
+                        <thead>
+                            <th>Method</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><h1>GET</h1></td>
+                            <td>Return the referenced member of the collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>PUT</h1></td>
+                            <td>Create or update the referenced member of the collection</td>
+                        </tr>
+                        <tr>
+                            <td><h1>POST</h1></td>
+                            <td>Generally unused on specific members</td>
+                        </tr>
+                        <tr>
+                            <td><h1>DELETE</h1></td>
+                            <td>Delete the referenced member of collection</td>
+                        </tr>
+                        </tbody>
+                        </table>
+                    </section>                  
+                    <section>
+                        <h2>GET and POST constraints</h2>
+                        <p>Sometimes, firewalls, proxies, or just sending a unique HTTP method via an HTTP form is not allowed</p>
+                        <p>First we write a plugin to take <code>_method</code> and replace <code>REQUEST_METHOD</code> with that value</p>
 <pre><code class="python">
-</code></pre>						
-				</section>
-				<section>
-					<h2>HATEOAS and HAL</h2>
-					<aside class="notes">
-					HATEOAS or HAL (http://stateless.co/hal_specification.html)
-					if we specify HATEOAS, we need to use XML, which sucks
-					another blog on this (http://blog.stateless.co/post/13296666138/json-linking-with-hal)
-					</aside>
-				</section>
-				<section>
-					<section>
-						<h2>Collection REST calls</h2>
-					</section>
-					<section>
-						<h2>GET</h2>
-					</section>
-					<section>
-						<h2>POST</h2>
-					</section>
-					<section>
-						<h2>PUT, PATCH, DELETE</h2>
-					</section>
-				</section>				
-				<section>
-					<section>
-					<h2>Serving our API from different domain</h2>
-					</section>
-					<section>
-						<h2>CORS</h2>
-						<ul>
-							<li class="fragment"><strong>C . </strong>ross</li>
-							<li class="fragment"><strong>O . </strong>rigin</li>
-							<li class="fragment"><strong>R . </strong>esource</li>
-							<li class="fragment"><strong>S . </strong>haring</li>
-						</ul>
-					</section>
-					<section>
-						<h2>OPTIONS and preflight</h2>
-						<p class="fragment">More complex CORS request comes with preflight</p>
-						<ul>
-							<li class="fragment">Custom headers are used in the request</li>
-							<li class="fragment">An HTTP method other than GET, HEAD, or POST used</li>
-							<li class="fragment">POST used but Content-Type other than <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, <code>text/plain</code></li>
-						</ul>
-						<aside class="notes">
-						This was shown to be a problem and head scratcher because certain javascript libraries were sending a custom header 'X-Requested-With' when issuing a request and it triggered the preflight.
-						</aside>
-					</section>
-					<section>
-						<h2>CORS via bottle.py decorator</h2>
+class MethodOverride(object):
+  def __init__(self, app):
+    self.app = app
+ 
+  def __call__(self, environ, start_response):
+    method = webapp.Request(environ).get('_method')
+    if method:
+      environ['REQUEST_METHOD'] = method.upper()
+    return self.app(environ, start_response)
+</code></pre>
+                    </section>
+                    <section>
+                        <h2>GET and POST constraints</h2>
+                        <p>Here's a test using the plugin</p>
+<pre><code class="python"> 
+from bottle import Bottle, run
+
+app = Bottle()
+
+@route("/test_override", method="PUT")
+def test_put():
+  return "PUT worked!"
+ 
+@route("/test_override", method="DELETE")
+def test_delete():
+  return "DELETE worked!"
+ 
+if __name__ == '__main__':
+    override_plugin = MethodOverride(app)
+    app.install(override_plugin)
+    run(app, host='localhost', port=8080, debug=True) 
+</code></pre>
+                        <aside class="notes">
+                            6 constraints of REST
+                            https://blog.apigee.com/detail/api_design_ruminating_over_rest
+                        </aside>
+                    </section>
+                </section>
+                <section>
+                    <h2>What about PUT, PATCH, and DELETE</h2>
+<pre><code class="python">
+@app.route("/stocks", method="PUT")
+@app.route("/stocks", method="PATCH")
+@app.route("/stocks", method="DELETE")
+def not_allowed():
+    abort(405, "Not Allowed")
+</code></pre>           
+                </section>          
+<!--      
+                <section>
+                    <h2>HATEOAS and HAL</h2>
+                    <aside class="notes">
+                    HATEOAS or HAL (http://stateless.co/hal_specification.html)
+                    if we specify HATEOAS, we need to use XML, which sucks
+                    another blog on this (http://blog.stateless.co/post/13296666138/json-linking-with-hal)
+                    </aside>
+                </section>
+-->
+                <section>
+                    <section>
+                        <h2>Collection REST calls</h2>
+                    </section>
+                    <section>
+                        <h2>Get referenced stock</h2>
+<pre><code class="python">
+@app.route('/stocks/&lt;symbol&gt;', method='GET')
+def get_stock(symbol='AAPL'):
+    stock = {
+        "symbol": "AAPL",
+        "price": 114.18
+    }
+    response.content_type = 'application/json'    
+    return json.dumps(stock)
+</code></pre>                       
+                    </section>
+                    <section>
+                        <h2>Delete referenced stock</h2>
+<pre><code class="python">
+@app.route('/stocks/&lt;symbol&gt;', method='DELETE')
+def delete_stock(symbol='AAPL'):
+    response.content_type = 'application/json'
+
+    for idx, stock in enumerate(stocks):
+        if stock['symbol'] == symbol:
+            del stocks[idx]
+            response.status = 200
+            return ''
+    abort(404, 'Stock not found')
+</code></pre>
+                    </section>                    
+                    <section>
+                    <h2>What about POST, PUT, and PATCH</h2>
+<pre><code class="python">
+@app.route("/stocks/&lt;symbol&gt;", method="POST")
+@app.route("/stocks/&lt;symbol&gt;", method="PUT")
+@app.route("/stocks/&lt;symbol&gt;", method="PATCH")
+def not_allowed():
+    abort(405, "Not Allowed")
+</code></pre>           
+                    </section>    
+                </section>
+                <section>
+                    <section>
+                    <h2>Serving our API from different domain</h2>
+                    </section>
+                    <section>
+                        <h2>CORS</h2>
+                        <ul>
+                            <li class="fragment"><strong>C . </strong>ross</li>
+                            <li class="fragment"><strong>O . </strong>rigin</li>
+                            <li class="fragment"><strong>R . </strong>esource</li>
+                            <li class="fragment"><strong>S . </strong>haring</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>OPTIONS and preflight</h2>
+                        <p class="fragment">More complex CORS request comes with preflight</p>
+                        <ul>
+                            <li class="fragment">Custom headers are used in the request</li>
+                            <li class="fragment">An HTTP method other than GET, HEAD, or POST used</li>
+                            <li class="fragment">POST used but Content-Type other than <code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, <code>text/plain</code></li>
+                        </ul>
+                        <aside class="notes">
+                        This was shown to be a problem and head scratcher because certain javascript libraries were sending a custom header 'X-Requested-With' when issuing a request and it triggered the preflight.
+                        </aside>
+                    </section>
+                    <section>
+                        <h2>CORS via bottle.py decorator</h2>
 <pre><code class="python">
 import bottle
 from bottle import response
@@ -539,9 +609,9 @@ def lvambience():
 
 app.run(port=8001)
 </code></pre>
-					</section>
-					<section>
-						<h2>CORS via bottle.py Plugin</h2>
+                    </section>
+                    <section>
+                        <h2>CORS via bottle.py Plugin</h2>
 <pre><code class="python">
 import bottle
 from bottle import response
@@ -574,31 +644,31 @@ def lvambience():
 app.install(EnableCors())
 
 app.run(port=8001)
-</code></pre>			
-					</section>
-				</section>
-				<section>
-					<section>
-						<h2>Member REST calls</h2>
-					</section>
-					<section>
-						<h2>GET</h2>
-					</section>
-					<section>
-						<h2>DELETE</h2>
-					</section>
-					<section>
-						<h2>PUT, PATCH and POST</h2>
-					</section>
-				</section>
-				<section>
-					<h2>Authentication</h2>
-					<aside class="notes">
-					oauth2 impl would be cool, but possibly untenable, maybe we just do basic auth, show how that works, and advise the API be hit over https
-					</aside>
-				</section>
-				<section>
-					<h2>Middleware Integration</h2>
+</code></pre>           
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h2>Member REST calls</h2>
+                    </section>
+                    <section>
+                        <h2>GET</h2>
+                    </section>
+                    <section>
+                        <h2>DELETE</h2>
+                    </section>
+                    <section>
+                        <h2>PUT, PATCH and POST</h2>
+                    </section>
+                </section>
+                <section>
+                    <h2>Authentication</h2>
+                    <aside class="notes">
+                    oauth2 impl would be cool, but possibly untenable, maybe we just do basic auth, show how that works, and advise the API be hit over https
+                    </aside>
+                </section>
+                <section>
+                    <h2>Middleware Integration</h2>
 <pre><code class="python">
 from cherrypy import wsgiserver
 from helloworld import app
@@ -612,116 +682,116 @@ if __name__ == '__main__':
    except KeyboardInterrupt:
       server.stop()
 </code></pre>
-				</section>
-				<section>
-					<h2>What we've covered</h2>
-					<ul>
-						<li class="fragment"><s>Installing bottle and dependencies</s></li>
-						<li class="fragment"><s>Building a RESTful example</s></li>
-						<li class="fragment"><s>Testing calls to REST API</s></li>
-						<li class="fragment"><s>Integration with WSGI middleware</s></li>
-					</ul>
-				</section>				
-				<section>
-					<h2>Helpful Links</h2>
-					<p><a href="http://something.com">Something</a></p>
-				</section>
-				<section>
-					<h2>New WebSocket book</h2>
-					<p><a href="http://bit.ly/lombardi_websocket_book">bit.ly/lombardi_websocket_book</a></p>
-					<img src="images/WebSocket_comp.png" />
-				</section>				
-				<section>
-					<h1>Q &amp; A</h1>
-					<h3>Andrew Lombardi / <a href="http://www.twitter.com/kinabalu">@kinabalu</a></h3>
-					<p>
-						kinabalu @ <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
-					</p>
-					<p>
-						<small>#javascript</small>
-					</p>
-					<p>
-						<small><a href="http://kinabalu.github.io/simple_apis_bottlepy_presentation">http://kinabalu.github.io/simple_apis_bottlepy_presentation</a></small>
-					</p>
+                </section>
+                <section>
+                    <h2>What we've covered</h2>
+                    <ul>
+                        <li class="fragment"><s>Installing bottle and dependencies</s></li>
+                        <li class="fragment"><s>Building a RESTful example</s></li>
+                        <li class="fragment"><s>Testing calls to REST API</s></li>
+                        <li class="fragment"><s>Integration with WSGI middleware</s></li>
+                    </ul>
+                </section>              
+                <section>
+                    <h2>Helpful Links</h2>
+                    <p><a href="http://something.com">Something</a></p>
+                </section>
+                <section>
+                    <h2>New WebSocket book</h2>
+                    <p><a href="http://bit.ly/lombardi_websocket_book">bit.ly/lombardi_websocket_book</a></p>
+                    <img src="images/WebSocket_comp.png" />
+                </section>              
+                <section>
+                    <h1>Q &amp; A</h1>
+                    <h3>Andrew Lombardi / <a href="http://www.twitter.com/kinabalu">@kinabalu</a></h3>
+                    <p>
+                        kinabalu @ <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
+                    </p>
+                    <p>
+                        <small>#javascript</small>
+                    </p>
+                    <p>
+                        <small><a href="http://kinabalu.github.io/simple_apis_bottlepy_presentation">http://kinabalu.github.io/simple_apis_bottlepy_presentation</a></small>
+                    </p>
 
-				</section>
+                </section>
 
-			</div>
+            </div>
 
-		</div>
+        </div>
 
-		<script src="reveal.js/lib/js/head.min.js"></script>
-		<script src="reveal.js/js/reveal.min.js"></script>
-		<script src="js/underscore-min.js"></script>
-		<script>
+        <script src="reveal.js/lib/js/head.min.js"></script>
+        <script src="reveal.js/js/reveal.min.js"></script>
+        <script src="js/underscore-min.js"></script>
+        <script>
 
-			Reveal.addEventListener( 'slidechanged', function( event ) {
-			    // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+            Reveal.addEventListener( 'slidechanged', function( event ) {
+                // event.previousSlide, event.currentSlide, event.indexh, event.indexv
 
-				_.each(iframe_sections, function(id_name) {
-					name = id_name['name'];
-					url = id_name['url'];
+                _.each(iframe_sections, function(id_name) {
+                    name = id_name['name'];
+                    url = id_name['url'];
 
-				    if(event.previousSlide && event.previousSlide.getAttribute('id')==name) {
-				    	document.getElementById(name+'_iframe').parentNode.removeChild(document.getElementById(name+'_iframe'));
-					}
+                    if(event.previousSlide && event.previousSlide.getAttribute('id')==name) {
+                        document.getElementById(name+'_iframe').parentNode.removeChild(document.getElementById(name+'_iframe'));
+                    }
 
-					if(event.currentSlide.getAttribute('id')==name) {
-						var iframe = document.createElement("iframe");
-						iframe.src = url;
-						iframe.id = name+'_iframe';
-						iframe.width = '100%';
-						iframe.height = '100%';
-						document.getElementById(name).appendChild(iframe);					
-					}
-				});
-			} );			
-			Reveal.addEventListener( 'overviewshown', function( event ) { 
-			} );
-		</script>
+                    if(event.currentSlide.getAttribute('id')==name) {
+                        var iframe = document.createElement("iframe");
+                        iframe.src = url;
+                        iframe.id = name+'_iframe';
+                        iframe.width = '100%';
+                        iframe.height = '100%';
+                        document.getElementById(name).appendChild(iframe);                  
+                    }
+                });
+            } );            
+            Reveal.addEventListener( 'overviewshown', function( event ) { 
+            } );
+        </script>
 
-		<script>
+        <script>
 
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls: true,
-				progress: true,
-				history: true,
-				center: true,
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
 
-				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+                theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
 
-				// Optional libraries used to extend on reveal.js
-				dependencies: [
-					{ src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'reveal.js/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-					{ src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
-					{ src: 'reveal.js-fullscreen-img/fullscreen-img.js' }
-					//{ src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
-				]
-			});
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'reveal.js/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'reveal.js-fullscreen-img/fullscreen-img.js' }
+                    //{ src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
 
-			/*
-			var canvas = document.getElementById('mystic_logo');
-			if (canvas.getContext) {
-				alert('canvas');
-				var context = canvas.getContext('2d');
+            /*
+            var canvas = document.getElementById('mystic_logo');
+            if (canvas.getContext) {
+                alert('canvas');
+                var context = canvas.getContext('2d');
 
-				var myImage = new Image();
-				myImage.onload = function() {
-				  canvas.setAttribute('width', myImage.width);
-				  canvas.setAttribute('height', myImage.height);
-				  context.drawImage(myImage, 0, 0);
-		          }
-			}
-			myImage.src = "images/mystic-logo-contracts.png";
-			*/
-		</script>
+                var myImage = new Image();
+                myImage.onload = function() {
+                  canvas.setAttribute('width', myImage.width);
+                  canvas.setAttribute('height', myImage.height);
+                  context.drawImage(myImage, 0, 0);
+                  }
+            }
+            myImage.src = "images/mystic-logo-contracts.png";
+            */
+        </script>
 
-	</body>
+    </body>
 </html>
