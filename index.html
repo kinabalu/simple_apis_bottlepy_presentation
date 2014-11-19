@@ -15,7 +15,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
-        <link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+        <link rel="stylesheet" href="reveal.js/css/theme/beige.css" id="theme">
         <link rel="stylesheet" href="css/reset.css">
         <!-- For syntax highlighting -->
         <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
@@ -115,16 +115,18 @@
                         <p class="fragment"><strong>To our success!</strong></p>
                     </section>
                 </section>
-                <section fullscreen-img="images/rakia_63.png" />
+                <section fullscreen-img="images/rakia_63.png">
+                    <h1 class="fragment">pian kato svinia</h1>
                     <aside class="notes">
                         Known side effects: 
                         - You may start to sing. 
                         - You can't find your way home. 
                         - It's possible you may forget your name and/or get lost in your own home. 
-                        - If you drink more than 1 liter you may collapse. The bulgarian term for this condition is "Ïèÿí íà ñâèíÿ" (transcription "Pian na svinia", meaning "Drunk like a pig").
-                        ...oh, rakiq,oh holy martyr... (quote from a bulgarian rakia-dedicated song... actually most of the bulgarian popular music (a.k.a. chalga) is dedicated and/or result of this powerfull brew...)
-                    </aside>
-                </section>  
+                        - "pian kato svinia" - more than 1 liter - "drunk like a pig"
+                    </aside>                
+                </section>
+                <section fullscreen-img="images/shopska-salad.jpg">
+                </section>
                 <section>
                     <h2>What we'll cover</h2>
                     <ul>
@@ -179,7 +181,7 @@ def hello():
     return "Hello, World!"
 
 if __name__ == '__main__':
-    run(app, host='localhost', port=8081, debug=True)
+    run(app, host='localhost', port=8080, debug=True)
 </code></pre>                       
                     </section>
                     <section>
@@ -237,20 +239,12 @@ bottle==0.12.7
             └── site-packages
 </code></pre>
                         <p class="fragment">Segmenting our dependencies and allow testing multiple python environments</p>
+                        <p class="fragment">Docker is possibly a better option</p>
                         <aside class="notes">
                         Lots of reasons to hate virtualenv, pip, etc but we won't go into detail here.  This configuration will work.  Can be done with a true virtualized environment such as Docker.
                         </aside>
                     </section>
                 </section>
-                <section>
-                    <h2>What we've covered</h2>
-                    <ul>
-                        <li><s>Installing bottle and dependencies</s></li>
-                        <li>Building a RESTful example</li>
-                        <li>Testing calls to REST API</li>
-                        <li>Integration with WSGI middleware</li>
-                    </ul>
-                </section>              
                 <section>
                     <section>
                         <h2>Our Stocks Example</h2>
@@ -512,7 +506,7 @@ def not_allowed():
 -->
                 <section>
                     <section>
-                        <h2>Collection REST calls</h2>
+                        <h2>Member REST calls</h2>
                     </section>
                     <section>
                         <h2>Get referenced stock</h2>
@@ -553,6 +547,9 @@ def not_allowed():
 </code></pre>           
                     </section>    
                 </section>
+                <section>
+                    <h2>Rewrite ConTalk API with bottle</h2>
+                </section>                
                 <section>
                     <section>
                     <h2>Serving our API from different domain</h2>
@@ -647,29 +644,51 @@ app.run(port=8001)
 </code></pre>           
                     </section>
                 </section>
-                <section>
-                    <section>
-                        <h2>Member REST calls</h2>
-                    </section>
-                    <section>
-                        <h2>GET</h2>
-                    </section>
-                    <section>
-                        <h2>DELETE</h2>
-                    </section>
-                    <section>
-                        <h2>PUT, PATCH and POST</h2>
-                    </section>
-                </section>
+<!--                
                 <section>
                     <h2>Authentication</h2>
                     <aside class="notes">
                     oauth2 impl would be cool, but possibly untenable, maybe we just do basic auth, show how that works, and advise the API be hit over https
                     </aside>
                 </section>
+-->                
+                <section>
+                    <h2>Bottle handles defaults nicely</h2>
+                    <table width="100%">
+                        <thead>
+                            <th>Data Type</th>
+                            <th>How Bottle Handles</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dict</td>
+                                <td>Returns a Content-Type <code>application/json</code></td>
+                            </tr>
+                            <tr>
+                                <td>None/False/Empty String</td>
+                                <td>Produces a <code>Content-Length</code> header of 0</td>
+                            </tr>
+                            <tr>
+                                <td>Unicode Strings</td>
+                                <td>
+                                Automatically encoded with the codec specified in the <code>Content-Type</code>, of which utf8 is the default, then treated as a normal Byte String.</td>
+                            </tr>
+                            <tr>
+                                <td>Byte Strings</td>
+                                <td>Outputs to browser and proper <code>Content-Length</code> header for size</td>
+                            </tr>
+                            <tr>
+                                <td>File objects</td>
+                                <td>Everything that has a .read() method is treated as File object and passed to the wsgi.file_wrapper callable defined by the WSGI server framework</td>
+                            </tr>
+                        </tbody>
+                    </table>                
+                </section>
                 <section>
                     <h2>Middleware Integration</h2>
-<pre><code class="python">
+<pre><code class="python"># server.py
+run(host='localhost', port=36086, server='cherrypy')
+
 from cherrypy import wsgiserver
 from helloworld import app
 
@@ -681,20 +700,25 @@ if __name__ == '__main__':
       server.start()
    except KeyboardInterrupt:
       server.stop()
+
+# api.py
+if __name__ == '__main__':
+    run(app, host='localhost', port=8080, server='cherrypy')
 </code></pre>
+                </section>
+                <section>
+                    <h2>Deploy using Docker with nginx</h2>
+                    <p>Yes it can be done, and yes it's awesome</p>
                 </section>
                 <section>
                     <h2>What we've covered</h2>
                     <ul>
-                        <li class="fragment"><s>Installing bottle and dependencies</s></li>
-                        <li class="fragment"><s>Building a RESTful example</s></li>
-                        <li class="fragment"><s>Testing calls to REST API</s></li>
-                        <li class="fragment"><s>Integration with WSGI middleware</s></li>
+                        <li><s>Installing bottle and dependencies</s></li>
+                        <li><s>Building a RESTful example</s></li>
+                        <li><s>Testing calls to REST API</s></li>
+                        <li><s>Integration with WSGI middleware</s></li>
+                        <li><s>Deployment with Docker</s></li>
                     </ul>
-                </section>              
-                <section>
-                    <h2>Helpful Links</h2>
-                    <p><a href="http://something.com">Something</a></p>
                 </section>
                 <section>
                     <h2>New WebSocket book</h2>

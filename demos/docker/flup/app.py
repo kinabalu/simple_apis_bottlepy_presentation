@@ -3,8 +3,23 @@ import json
 import urllib
 import requests
 
+
 app = Bottle()
 
+
+"""
+# Modify this example so it uses mongo to save stocks data
+import mongoengine as db
+
+db.connect('stocks', host='192.168.59.103')
+
+class Stock(db.Document):
+    symbol = db.StringField(required=True)
+    price = db.DecimalField(required=True, precision=2)
+
+stock = Stock(symbol='AAPL', price=114.18)
+stock.save()
+"""
 stocks = [
     {"symbol": "AAPL", "price": 114.18},
     {"symbol": "MSFT", "price": 49.58},
@@ -35,6 +50,9 @@ def _get_stocks_from_yql(stock_list):
 
 @app.route('/stocks', method='GET')
 def list_stocks():
+    for stock in Stock.objects:
+        print stock
+
     result = dict()
     result['num_results'] = len(stocks)
     result['total_pages'] = 1
@@ -81,4 +99,5 @@ def delete_stock(symbol='AAPL'):
 
 
 if __name__ == '__main__':
-    run(app, host='localhost', port=8080, debug=True)
+    # expand this out with args so we can swap between flup and not, and init the mongo with initial data
+    run(app, host='0.0.0.0', port=8000, server='flup')
