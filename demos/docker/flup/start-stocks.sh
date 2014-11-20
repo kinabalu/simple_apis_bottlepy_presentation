@@ -2,4 +2,4 @@
 
 cd /var/www
 
-/usr/bin/python app.py
+/usr/bin/python /var/www/app.py

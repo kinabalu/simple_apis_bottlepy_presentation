@@ -2,12 +2,12 @@ from bottle import Bottle, run, request, response, abort
 import json
 import urllib
 import requests
+import argparse
 
 
 app = Bottle()
 
 
-"""
 # Modify this example so it uses mongo to save stocks data
 import mongoengine as db
 
@@ -17,6 +17,7 @@ class Stock(db.Document):
     symbol = db.StringField(required=True)
     price = db.DecimalField(required=True, precision=2)
 
+"""
 stock = Stock(symbol='AAPL', price=114.18)
 stock.save()
 """
@@ -50,24 +51,33 @@ def _get_stocks_from_yql(stock_list):
 
 @app.route('/stocks', method='GET')
 def list_stocks():
+    objects = []
     for stock in Stock.objects:
-        print stock
+        objects.append({"symbol": stock.symbol, "price": float(stock.price)})
 
     result = dict()
-    result['num_results'] = len(stocks)
+    # example metadata to send along with dataset
+    result['num_results'] = len(objects)
     result['total_pages'] = 1
     result['page'] = 1
-    result['objects'] = stocks
+    result['objects'] = objects
 
-    response.content_type = 'application/json'    
-    return json.dumps(result)
+    return result
 
 @app.route('/stocks', method='POST')
 def add_stock():
     try:
         postdata = request.body.read()
         symbol_request = json.loads(postdata)
-        stocks.append({"symbol": symbol_request['symbol'], "price": 75.42})
+
+        for stock in Stock.objects: # is there a way to check if the entry exists without for loop?
+            if stock.symbol == symbol_request['symbol']:
+                abort(404, "Find a better way of saying this, but you failed dude")
+                return
+
+        # TODO grab stock price with YQL here?
+        stock = Stock(symbol=symbol_request['symbol'], price=114.18)
+        stock.save()
     except TypeError:
         abort(500, "Invalid content passed")
 
@@ -77,18 +87,18 @@ def add_stock():
 def not_implemented():
   abort(405, "Method Not Allowed")
 
+# Member REST methods
 @app.route('/stocks/<symbol>', method='GET')
 def get_stock(symbol='AAPL'):
-    response.content_type = 'application/json'    
 
-    for stock in stocks:
-        if stock['symbol'] == symbol:
-            return json.dumps(stock)
+    for stock in Stock.objects: # is there a way to check if the entry exists without for loop?
+        if stock.symbol == symbol_request['symbol']:
+            return {"symbol": stock.symbol, "price": float(stock.price)}
+
     abort(404, 'Stock not found')
 
 @app.route('/stocks/<symbol>', method='DELETE')
 def delete_stock(symbol='AAPL'):
-    response.content_type = 'application/json'
 
     for idx, stock in enumerate(stocks):
         if stock['symbol'] == symbol:
@@ -99,5 +109,59 @@ def delete_stock(symbol='AAPL'):
 
 
 if __name__ == '__main__':
-    # expand this out with args so we can swap between flup and not, and init the mongo with initial data
-    run(app, host='0.0.0.0', port=8000, server='flup')
+    parser = argparse.ArgumentParser(prog='stocksapi')
+
+    parser.add_argument(
+        "--fcgi",
+        dest="use_fcgi",
+        action="store_true",
+        help="Use fcgi rather than wsgi"
+    )
+    parser.add_argument(
+        "--debug",
+        dest="debug",
+        action="store_true",
+        default=False,
+        help="Debug mode"
+    )
+    parser.add_argument(
+        "--mongo-import",
+        dest="mongo_import",
+        action="store_true",
+        default=False,
+        help="Import data into mongo"
+    )
+    parser.add_argument(
+        "--file",
+        dest="file",
+        type=str,
+        help="JSON-based data file"
+    )
+    parser.add_argument(
+        "-p",
+        dest="port",
+        type=int,
+        default=8080,
+        help="http port"
+    )
+
+    parser.add_argument(
+        "--host",
+        dest="host",
+        type=str,
+        default="localhost",
+        help="http server"
+    )
+
+
+    args = parser.parse_args()
+
+    if args.file:
+        """ we can obviously assume that if file than no mongo """
+        print 'you entered a file'
+
+    if args.use_fcgi:
+        run(app, host=args.host, port=args.port, debug=args.debug, server='flup')
+    else:
+        run(app, host=args.host, port=args.port, debug=args.debug)
+    
