@@ -1,31 +1,17 @@
 from bottle import Bottle, run, request, response, abort
+import mongoengine as db
 import json
 import urllib
 import requests
 import argparse
 
-
 app = Bottle()
 
-
-# Modify this example so it uses mongo to save stocks data
-import mongoengine as db
-
-db.connect('stocks', host='192.168.59.103')
 
 class Stock(db.Document):
     symbol = db.StringField(required=True)
     price = db.DecimalField(required=True, precision=2)
 
-"""
-stock = Stock(symbol='AAPL', price=114.18)
-stock.save()
-"""
-stocks = [
-    {"symbol": "AAPL", "price": 114.18},
-    {"symbol": "MSFT", "price": 49.58},
-    {"symbol": "GOOG", "price": 544.40}
-]
 
 def _get_stocks_from_yql(stock_list):
     csv_stocks = '"' + ",".join(stock_list) + '"'
@@ -70,10 +56,11 @@ def add_stock():
         postdata = request.body.read()
         symbol_request = json.loads(postdata)
 
-        for stock in Stock.objects: # is there a way to check if the entry exists without for loop?
-            if stock.symbol == symbol_request['symbol']:
-                abort(404, "Find a better way of saying this, but you failed dude")
-                return
+        stock_qs = Stock.objects(symbol=symbol_request['symbol'])
+
+        if stock_qs:
+            abort(404, "Find a better way of saying this, but you failed dude")
+            return
 
         # TODO grab stock price with YQL here?
         stock = Stock(symbol=symbol_request['symbol'], price=114.18)
@@ -89,20 +76,22 @@ def not_implemented():
 
 # Member REST methods
 @app.route('/stocks/<symbol>', method='GET')
-def get_stock(symbol='AAPL'):
+def get_stock(symbol):
 
-    for stock in Stock.objects: # is there a way to check if the entry exists without for loop?
-        if stock.symbol == symbol_request['symbol']:
-            return {"symbol": stock.symbol, "price": float(stock.price)}
+    stock_qs = Stock.objects(symbol=symbol)
+
+    if stock_qs:
+        stock = stock_qs.get()
+        return {"symbol": stock.symbol, "price": float(stock.price)}
 
     abort(404, 'Stock not found')
 
 @app.route('/stocks/<symbol>', method='DELETE')
-def delete_stock(symbol='AAPL'):
+def delete_stock(symbol):
 
-    for idx, stock in enumerate(stocks):
-        if stock['symbol'] == symbol:
-            del stocks[idx]
+    for stock in Stock.objects:
+        if stock.symbol == symbol:
+            stock.delete()
             response.status = 200
             return ''
     abort(404, 'Stock not found')
@@ -125,24 +114,19 @@ if __name__ == '__main__':
         help="Debug mode"
     )
     parser.add_argument(
-        "--mongo-import",
-        dest="mongo_import",
-        action="store_true",
-        default=False,
-        help="Import data into mongo"
-    )
-    parser.add_argument(
-        "--file",
-        dest="file",
-        type=str,
-        help="JSON-based data file"
-    )
-    parser.add_argument(
         "-p",
         dest="port",
         type=int,
         default=8080,
         help="http port"
+    )
+
+    parser.add_argument(
+        "--mongo-host",
+        dest="mongo_host",
+        type=str,
+        default="mongo",
+        help="mongo server"
     )
 
     parser.add_argument(
@@ -156,9 +140,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.file:
-        """ we can obviously assume that if file than no mongo """
-        print 'you entered a file'
+    db.connect('stocks', host=args.mongo_host)
 
     if args.use_fcgi:
         run(app, host=args.host, port=args.port, debug=args.debug, server='flup')
