@@ -2,56 +2,24 @@ from bottle import Bottle, run, request, response, abort
 import json
 import urllib
 import requests
-
+from pymongo import MongoClient
+from pymongo.errors import InvalidId
+from bson import BSON
+from bson import json_util
+from bson.objectid import ObjectId
 
 app = Bottle()
-
-
-"""
-# Modify this example so it uses mongo to save stocks data
-import mongoengine as db
-
-db.connect('stocks', host='192.168.59.103')
-
-class Stock(db.Document):
-    symbol = db.StringField(required=True)
-    price = db.DecimalField(required=True, precision=2)
-
-stock = Stock(symbol='AAPL', price=114.18)
-stock.save()
-"""
-stocks = [
-    {"symbol": "AAPL", "price": 114.18},
-    {"symbol": "MSFT", "price": 49.58},
-    {"symbol": "GOOG", "price": 544.40}
-]
-
-def _get_stocks_from_yql(stock_list):
-    csv_stocks = '"' + ",".join(stock_list) + '"'
-
-    url = 'https://query.yahooapis.com/v1/public/yql'
-    data = urllib.quote_plus('select * from yahoo.finance.quotes where symbol in (' + csv_stocks + ')')
-    data_url = url + '?q=' + data + '&env=http%3A%2F%2Fdatatables.org%2Falltables.env&format=json'
-
-    r = requests.get(data_url)
-
-    stocks_result = []
-    if r.status_code == 200:
-        j = r.json()
-        total_returned = j['query']['count']
-        for entry in j['query']['results']['quote']:
-            stocks_result.append({
-                'symbol': entry['symbol'],
-                'price': entry['Ask']
-            })
-
-    return stocks_result
-
+client = MongoClient('mongodb://mongo:27017')
+db = client.stocks
 
 @app.route('/stocks', method='GET')
 def list_stocks():
-    for stock in Stock.objects:
-        print stock
+    stocks = []
+    for stock in db.stocks.find():
+        stocks.append({
+            "symbol": stock['symbol'],
+            "price": stock['price']
+        })
 
     result = dict()
     result['num_results'] = len(stocks)
@@ -67,35 +35,41 @@ def add_stock():
     try:
         postdata = request.body.read()
         symbol_request = json.loads(postdata)
-        stocks.append({"symbol": symbol_request['symbol'], "price": 75.42})
+        db.stocks.save({"symbol": symbol_request['symbol'], "price": 0.00})
     except TypeError:
         abort(500, "Invalid content passed")
 
+"""
 @app.route("/stocks", method="PUT")
 @app.route("/stocks", method="PATCH")
 @app.route("/stocks", method="DELETE")
 def not_implemented():
   abort(405, "Method Not Allowed")
+"""
 
 @app.route('/stocks/<symbol>', method='GET')
-def get_stock(symbol='AAPL'):
+def get_stock(symbol):
     response.content_type = 'application/json'    
 
-    for stock in stocks:
-        if stock['symbol'] == symbol:
-            return json.dumps(stock)
-    abort(404, 'Stock not found')
+    stock = db.stocks.find_one({"symbol": symbol})
+
+    if stock is None:
+        abort(404, 'Stock not found')
+
+    return json.dumps({"symbol": symbol, "price": stock['price']})
 
 @app.route('/stocks/<symbol>', method='DELETE')
-def delete_stock(symbol='AAPL'):
+def delete_stock(symbol):
     response.content_type = 'application/json'
 
-    for idx, stock in enumerate(stocks):
-        if stock['symbol'] == symbol:
-            del stocks[idx]
-            response.status = 200
-            return ''
-    abort(404, 'Stock not found')
+    ref_stock = db.stocks.find_one({"symbol": symbol})
+
+    if ref_stock is None:
+        abort(404)
+        return
+
+    db.stocks.remove({"symbol": symbol});
+    return ''
 
 
 if __name__ == '__main__':
